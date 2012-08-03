@@ -76,6 +76,21 @@ when "mac_os_x"
   default['mysql']['root_group']              = "admin"
   default['mysql']['mysqladmin_bin']          = "/usr/local/bin/mysqladmin"
   default['mysql']['mysql_bin']               = "/usr/local/bin/mysql"
+when "smartos"
+  default['mysql']['package_name']            = "mysql-server"
+  default['mysql']['service_name']            = "mysql"
+  default['mysql']['basedir']                 = "/opt/local"
+  default['mysql']['data_dir']                = "/var/mysql"
+  default['mysql']['root_group']              = "root"
+  default['mysql']['mysqladmin_bin']          = "/opt/local/bin/mysqladmin"
+  default['mysql']['mysql_bin']               = "/opt/local/bin/mysql"
+
+  set['mysql']['conf_dir']                    = '/etc'
+  set['mysql']['confd_dir']                   = '/etc/mysql/conf.d'
+  set['mysql']['socket']                      = "/tmp/mysql.sock"
+  set['mysql']['pid_file']                    = "/var/mysql/mysql.pid"
+  set['mysql']['old_passwords']               = 1
+  set['mysql']['grants_path']                 = "/opt/local/share/mysql/grants.sql"
 else
   default['mysql']['package_name']            = "mysql-server"
   default['mysql']['service_name']            = "mysql"

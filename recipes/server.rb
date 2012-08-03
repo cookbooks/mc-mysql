@@ -56,7 +56,6 @@ if platform?(%w{debian ubuntu})
   end
 
 end
-
 if platform? 'windows'
   package_file = node['mysql']['package_file']
 
@@ -78,7 +77,7 @@ package node['mysql']['package_name'] do
   action :install
 end
 
-unless platform?(%w{mac_os_x})
+unless platform?(%w{mac_os_x smartos})
 
   directory node['mysql']['confd_dir'] do
     owner "mysql" unless platform? 'windows'
@@ -137,6 +136,13 @@ unless platform?(%w{mac_os_x})
   end
 end
 
+if platform?(%w{smartos})
+  service "mysql" do
+    supports :status => true, :restart => true, :reload => true
+    action [:enable, :start]
+  end
+end
+
 unless Chef::Config[:solo]
   ruby_block "save node data" do
     block do
@@ -151,6 +157,7 @@ end
 unless platform?(%w{debian ubuntu})
 
   execute "assign-root-password" do
+    Chef::Log.info("XXXXXXXXCOMMAND TO RUN #{node['mysql']['mysqladmin_bin']} -u root password #{node['mysql']['server_root_password']}")
     command "\"#{node['mysql']['mysqladmin_bin']}\" -u root password \"#{node['mysql']['server_root_password']}\""
     action :run
     only_if "\"#{node['mysql']['mysql_bin']}\" -u root -e 'show databases;'"
