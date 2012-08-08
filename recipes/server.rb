@@ -56,6 +56,7 @@ if platform?(%w{debian ubuntu})
   end
 
 end
+
 if platform? 'windows'
   package_file = node['mysql']['package_file']
 
@@ -77,7 +78,7 @@ package node['mysql']['package_name'] do
   action :install
 end
 
-unless platform?(%w{mac_os_x smartos})
+unless platform?(%w{mac_os_x})
 
   directory node['mysql']['confd_dir'] do
     owner "mysql" unless platform? 'windows'
@@ -107,7 +108,7 @@ unless platform?(%w{mac_os_x smartos})
       start_command "start mysql"
     end
     supports :status => true, :restart => true, :reload => true
-    action :nothing
+    action :start
   end
 
   skip_federated = case node['platform']
@@ -133,13 +134,6 @@ unless platform?(%w{mac_os_x smartos})
       Chef::Log.info "my.cnf updated but mysql.reload_action is #{node['mysql']['reload_action']}. No action taken."
     end
     variables :skip_federated => skip_federated
-  end
-end
-
-if platform?(%w{smartos})
-  service "mysql" do
-    supports :status => true, :restart => true, :reload => true
-    action [:enable, :start]
   end
 end
 
@@ -199,7 +193,7 @@ else
     execute "mysql-install-privileges" do
       command "\"#{node['mysql']['mysql_bin']}\" -u root #{node['mysql']['server_root_password'].empty? ? '' : '-p' }\"#{node['mysql']['server_root_password']}\" < \"#{grants_path}\""
       action :nothing
-      subscribes :run, resources("template[#{grants_path}]"), :immediately
+      subscribes :run, resources("template[#{grants_path}]") #, :immediately
     end
   end
 end

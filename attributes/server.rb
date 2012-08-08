@@ -90,7 +90,7 @@ when "smartos"
   set['mysql']['confd_dir']                   = '/etc/mysql/conf.d'
   set['mysql']['socket']                      = "/tmp/mysql.sock"
   set['mysql']['pid_file']                    = "/var/mysql/mysql.pid"
-  set['mysql']['old_passwords']               = 1
+  set['mysql']['old_passwords']               = 0
   set['mysql']['grants_path']                 = "/opt/local/share/mysql/grants.sql"
 else
   default['mysql']['package_name']            = "mysql-server"
