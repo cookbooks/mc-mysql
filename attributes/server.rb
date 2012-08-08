@@ -18,6 +18,7 @@
 #
 
 default['mysql']['bind_address']               = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
+default['mysql']['port']                       = 3306
 
 case node["platform"]
 when "centos", "redhat", "fedora", "suse", "scientific", "amazon"
@@ -114,7 +115,7 @@ if attribute?('ec2')
   default['mysql']['ebs_vol_size'] = 50
 end
 
-default['mysql']['reload_action'] = "reload" # or "restart" or "none"
+default['mysql']['reload_action'] = "restart" # or "reload" or "none"
 
 default['mysql']['use_upstart'] = platform?("ubuntu") && node.platform_version.to_f >= 10.04
 
@@ -157,7 +158,6 @@ default['mysql']['tunable']['innodb_data_file_path']           = "ibdata1:10M:au
 default['mysql']['tunable']['innodb_flush_log_at_trx_commit']  = "1"
 default['mysql']['tunable']['innodb_flush_method']             = false
 default['mysql']['tunable']['innodb_log_buffer_size']          = "8M"
-default['mysql']['tunable']['innodb_adaptive_flushing']        = "true"
 
 default['mysql']['tunable']['query_cache_limit']    = "1M"
 default['mysql']['tunable']['query_cache_size']     = "16M"
