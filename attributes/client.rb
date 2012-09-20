@@ -44,6 +44,8 @@ when "windows"
   default['mysql']['client']['ruby_dir']     = RbConfig::CONFIG['bindir']
 when "mac_os_x"
   default['mysql']['client']['packages'] = %w{mysql-connector-c}
+when "smartos"
+  default['mysql']['client']['packages'] = %w{mysql-client}
 else
   default['mysql']['client']['packages'] = %w{mysql-client libmysqlclient-dev}
 end

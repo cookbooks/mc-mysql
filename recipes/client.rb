@@ -41,8 +41,6 @@ when "windows"
 when "mac_os_x"
   include_recipe 'homebrew'
   %w{mysql-connector-c}
-when "smartos"
-  %w{mysql-client}
 else
   %w{mysql-client libmysqlclient-dev}
 end
