@@ -65,7 +65,7 @@ if platform? 'windows'
     not_if { File.exists? "#{Chef::Config[:file_cache_path]}/#{package_file}" }
   end
 
-  windows_package node['mysql']['package_name'] do
+  windows_package node['mysql']['server']['packages'].first do
     source "#{Chef::Config[:file_cache_path]}/#{package_file}"
   end
 
@@ -74,8 +74,10 @@ if platform? 'windows'
   end
 end
 
-package node['mysql']['package_name'] do
-  action :install
+node['mysql']['server']['packages'].each do |package_name|
+  package package_name do
+    action :install
+  end
 end
 
 unless platform?(%w{mac_os_x})
@@ -108,7 +110,7 @@ unless platform?(%w{mac_os_x})
       start_command "start mysql"
     end
     supports :status => true, :restart => true, :reload => true
-    action :start
+    action :enable
   end
 
   skip_federated = case node['platform']
@@ -146,16 +148,12 @@ unless Chef::Config[:solo]
   end
 end
 
-# set the root password on platforms
-# that don't support pre-seeding
-unless platform?(%w{debian ubuntu})
-
-  execute "assign-root-password" do
-    command "\"#{node['mysql']['mysqladmin_bin']}\" -u root password \"#{node['mysql']['server_root_password']}\""
-    action :run
-    only_if "\"#{node['mysql']['mysql_bin']}\" -u root -e 'show databases;'"
-  end
-
+# set the root password for situations that don't support pre-seeding.
+# (eg. platforms other than debian/ubuntu & drop-in mysql replacements)
+execute "assign-root-password" do
+  command "\"#{node['mysql']['mysqladmin_bin']}\" -u root password \"#{node['mysql']['server_root_password']}\""
+  action :run
+  only_if "\"#{node['mysql']['mysql_bin']}\" -u root -e 'show databases;'"
 end
 
 # Homebrew has its own way to do databases
