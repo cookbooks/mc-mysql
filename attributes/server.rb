@@ -78,6 +78,7 @@ when "mac_os_x"
   default['mysql']['mysqladmin_bin']          = "/usr/local/bin/mysqladmin"
   default['mysql']['mysql_bin']               = "/usr/local/bin/mysql"
 when "smartos"
+  default['mysql']['server']['packages']      = %w{mysql-server}
   default['mysql']['package_name']            = "mysql-server"
   default['mysql']['service_name']            = "mysql"
   default['mysql']['basedir']                 = "/opt/local"
